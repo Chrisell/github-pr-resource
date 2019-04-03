@@ -21,6 +21,7 @@ type Git interface {
 	RevParse(string) (string, error)
 	Fetch(string, int) error
 	Merge(string) error
+	Submodule() error
 	GitCryptUnlock(string) error
 }
 
@@ -119,6 +120,14 @@ func (g *GitClient) Fetch(uri string, prNumber int) error {
 func (g *GitClient) Merge(sha string) error {
 	if err := g.command("git", "merge", sha, "--no-stat").Run(); err != nil {
 		return fmt.Errorf("merge failed: %s", err)
+	}
+	return nil
+}
+
+// Merge ...
+func (g *GitClient) Submodule() error {
+	if err := g.command("git", "submodule", "update", "--init", "--recursive", "--depth", "10").Run(); err != nil {
+		return fmt.Errorf("submodule failed: %s", err)
 	}
 	return nil
 }

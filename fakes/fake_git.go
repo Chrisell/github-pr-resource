@@ -9,6 +9,7 @@ import (
 
 type FakeGit struct {
 	FetchStub        func(string, int) error
+  SubmoduleStub    func() error
 	fetchMutex       sync.RWMutex
 	fetchArgsForCall []struct {
 		arg1 string
@@ -80,6 +81,21 @@ type FakeGit struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *FakeGit) Submodule() error {
+	fake.fetchMutex.Lock()
+	ret, specificReturn := fake.fetchReturnsOnCall[len(fake.fetchArgsForCall)]
+	fake.recordInvocation("Submodule", []interface{}{})
+	fake.fetchMutex.Unlock()
+	if fake.SubmoduleStub != nil {
+		return fake.SubmoduleStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.fetchReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeGit) Fetch(arg1 string, arg2 int) error {
